@@ -13,6 +13,42 @@ int main(int argc, char* argv[]) {
   return !is_correct_flag;
 }
 
+bool check_flags(int argc, char* argv[], Flags* flags) {
+  bool is_correct_flag = true;
+  int option, option_index = 0;
+
+  while ((option = getopt_long(argc, argv, "beEnstTv", long_options,
+                               &option_index)) != -1 &&
+         is_correct_flag) {
+    if (option == 'b') {
+      flags->b = true;
+      flags->n = false;
+    } else if (option == 'e') {
+      flags->e = true;
+      flags->v = true;
+    } else if (option == 'E') {
+      flags->e = true;
+    } else if (option == 'n') {
+      flags->n = !flags->b;
+    } else if (option == 's') {
+      flags->s = true;
+    } else if (option == 't') {
+      flags->t = true;
+      flags->v = true;
+    } else if (option == 'T') {
+      flags->t = true;
+    } else if (option == 'v') {
+      flags->v = true;
+    } else {
+      is_correct_flag = false;
+    }
+  }
+
+  if (!is_correct_flag) fprintf(stderr, "Unknown flag entered\n");
+
+  return is_correct_flag;
+}
+
 void process_file(Flags flags, const char* filename) {
   FILE* file = fopen(filename, "r");
 
@@ -20,7 +56,7 @@ void process_file(Flags flags, const char* filename) {
     cat(file, flags);
     fclose(file);
   } else {
-    fprintf(stderr, "Не удалось открыть файл: %s\n", filename);
+    fprintf(stderr, "Could not open the file: %s\n", filename);
   }
 }
 
@@ -62,40 +98,4 @@ void cat(FILE* file, const Flags flags) {
     printf("%c", symbol);
     prev_symbol = symbol;
   }
-}
-
-bool check_flags(int argc, char* argv[], Flags* flags) {
-  bool is_correct_flag = true;
-  int option, option_index = 0;
-
-  while ((option = getopt_long(argc, argv, "beEnstTv", long_options,
-                               &option_index)) != -1 &&
-         is_correct_flag) {
-    if (option == 'b') {
-      flags->b = true;
-      flags->n = false;
-    } else if (option == 'e') {
-      flags->e = true;
-      flags->v = true;
-    } else if (option == 'E') {
-      flags->e = true;
-    } else if (option == 'n') {
-      flags->n = !flags->b;
-    } else if (option == 's') {
-      flags->s = true;
-    } else if (option == 't') {
-      flags->t = true;
-      flags->v = true;
-    } else if (option == 'T') {
-      flags->t = true;
-    } else if (option == 'v') {
-      flags->v = true;
-    } else {
-      is_correct_flag = false;
-    }
-  }
-
-  if (!is_correct_flag) fprintf(stderr, "Введен неизвестный флаг\n");
-
-  return is_correct_flag;
 }
