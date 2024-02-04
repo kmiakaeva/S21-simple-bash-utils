@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -Werror -std=c11
+CFLAGS=-Wall -Wextra -Werror -std=c11 -g
 TEST_PATH=testing
 
-all: s21_cat test
+all: rebuild
 
 s21_cat:
 	$(CC) $(CFLAGS) s21_cat.c -o s21_cat
@@ -13,7 +13,7 @@ test:
 run:
 	./s21_cat_test 1
 
-rebuild: clean all
+rebuild: clean s21_cat test
 
 clean:
-	rm s21_cat s21_cat_test
+	rm -rf s21_cat test
